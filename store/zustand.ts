@@ -1,6 +1,6 @@
 import { createSelectors } from "@/lib/utils";
 import { create } from "zustand";
-import { combine } from "zustand/middleware";
+import { persist, StateStorage, createJSONStorage } from "zustand/middleware";
 
 interface CountState {
   nested: { number: number; name: string };
@@ -41,8 +41,6 @@ const useCountStoreBase = create<CountStore>((set) => ({
 
 export const useCountStore = createSelectors(useCountStoreBase);
 
-import { persist, StateStorage, createJSONStorage } from "zustand/middleware";
-
 const hashStorage: StateStorage = {
   getItem: (key): string => {
     const searchParams = new URLSearchParams(location.hash.slice(1));
@@ -81,3 +79,10 @@ const useBoundStoreBase = create<{
 );
 
 export const useBoundStore = createSelectors(useBoundStoreBase);
+
+
+export const useMeals = create(() => ({
+    papaBear: 'large porridge-pot',
+    mamaBear: 'middle-size porridge pot',
+    littleBear: 'A little, small, wee pot',
+  }))
