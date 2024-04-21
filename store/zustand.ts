@@ -1,5 +1,6 @@
 import { createSelectors } from "@/lib/utils";
 import { create } from "zustand";
+import { combine } from "zustand/middleware";
 
 interface CountState {
   nested: { number: number; name: string };
@@ -39,3 +40,44 @@ const useCountStoreBase = create<CountStore>((set) => ({
 }));
 
 export const useCountStore = createSelectors(useCountStoreBase);
+
+import { persist, StateStorage, createJSONStorage } from "zustand/middleware";
+
+const hashStorage: StateStorage = {
+  getItem: (key): string => {
+    const searchParams = new URLSearchParams(location.hash.slice(1));
+    const storedValue = searchParams.get(key) ?? "";
+    return JSON.parse(storedValue);
+  },
+  setItem: (key, newValue): void => {
+    const searchParams = new URLSearchParams(location.hash.slice(1));
+    searchParams.set(key, JSON.stringify(newValue));
+    location.hash = searchParams.toString();
+  },
+  removeItem: (key): void => {
+    const searchParams = new URLSearchParams(location.hash.slice(1));
+    searchParams.delete(key);
+    location.hash = searchParams.toString();
+  },
+};
+
+const useBoundStoreBase = create<{
+  search: string;
+  setSearch: (search: string) => void;
+}>()(
+  persist(
+    (set, get) => ({
+      search: "",
+      setSearch: (search: string) =>
+        set((state) => ({
+          search,
+        })),
+    }),
+    {
+      name: "search", // unique name
+      storage: createJSONStorage(() => hashStorage),
+    }
+  )
+);
+
+export const useBoundStore = createSelectors(useBoundStoreBase);
