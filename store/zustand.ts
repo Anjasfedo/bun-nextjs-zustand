@@ -1,3 +1,4 @@
+import { createSelectors } from "@/lib/utils";
 import { create } from "zustand";
 
 interface CountState {
@@ -11,7 +12,7 @@ interface CountAction {
 
 type CountStore = CountState & CountAction;
 
-export const useCountStore = create<CountStore>((set) => ({
+const useCountStoreBase = create<CountStore>((set) => ({
   nested: { number: 0, name: "hewroo" },
   increment: () =>
     set((state) => ({
@@ -28,3 +29,5 @@ export const useCountStore = create<CountStore>((set) => ({
       },
     })),
 }));
+
+export const useCountStore = createSelectors(useCountStoreBase)

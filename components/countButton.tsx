@@ -3,7 +3,8 @@ import { useCountStore } from "@/store/zustand";
 import { Button } from "@shadcn/button";
 
 const CountButton = () => {
-  const { increment, decrement } = useCountStore();
+    const increment = useCountStore.use.increment()
+    const decrement = useCountStore.use.decrement()
   return (
     <div>
       <Button onClick={increment}>Increment</Button>
