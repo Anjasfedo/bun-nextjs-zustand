@@ -1,7 +1,7 @@
 import { create } from "zustand";
 
 interface CountState {
-  number: number;
+  nested: { number: number, name: string };
 }
 
 interface CountAction {
@@ -12,7 +12,19 @@ interface CountAction {
 type CountStore = CountState & CountAction;
 
 export const useCountStore = create<CountStore>((set) => ({
-  number: 0,
-  increment: () => set((state) => ({ number: state.number + 1 })),
-  decrement: () => set((state) => ({ number: state.number - 1 })),
+  nested: { number: 0, name: "hewroo" },
+  increment: () =>
+    set((state) => ({
+      nested: {
+        ...state.nested,
+        number: state.nested.number + 1,
+      },
+    })),
+  decrement: () =>
+    set((state) => ({
+      nested: {
+        ...state.nested,
+        number: state.nested.number - 1,
+      },
+    })),
 }));
