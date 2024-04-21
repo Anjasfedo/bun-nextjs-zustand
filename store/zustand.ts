@@ -73,16 +73,48 @@ const useBoundStoreBase = create<{
     }),
     {
       name: "search", // unique name
-      storage: createJSONStorage(() => hashStorage),
+      storage: createJSONStorage(() => localStorage),
+      skipHydration: true,
+      //   onRehydrateStorage: (state) => {
+      //     console.log('hydration starts')
+
+      //     // optional
+      //     return (state, error) => {
+      //       if (error) {
+      //         console.log('an error happened during hydration', error)
+      //       } else {
+      //         console.log('hydration finished')
+      //       }
+      //     }
+      //   },
     }
   )
 );
 
 export const useBoundStore = createSelectors(useBoundStoreBase);
 
-
 export const useMeals = create(() => ({
-    papaBear: 'large porridge-pot',
-    mamaBear: 'middle-size porridge pot',
-    littleBear: 'A little, small, wee pot',
-  }))
+  papaBear: "large porridge-pot",
+  mamaBear: "middle-size porridge pot",
+  littleBear: "A little, small, wee pot",
+}));
+
+interface BearStoreState {
+  bears: number;
+}
+
+interface BearStoreActions {
+  addABear: () => void;
+}
+
+export const useBearStore = create<BearStoreState & BearStoreActions>()(
+  persist(
+    (set, get) => ({
+      bears: 0,
+      addABear: () => set({ bears: get().bears + 1 }),
+    }),
+    {
+      name: "food-storage",
+    }
+  )
+);
